@@ -37,7 +37,8 @@ const ProfilePage: React.FC = () => {
         // Extract unique interests for filters
         const interests = new Set<string>();
         mockProfiles.forEach(profile => {
-          profile.interests?.forEach(interest => interests.add(interest));
+          // Ensure profile.interests exists before trying to loop
+          profile.interests?.forEach((interest: string) => interests.add(interest));
         });
         setAvailableInterests(Array.from(interests));
         
