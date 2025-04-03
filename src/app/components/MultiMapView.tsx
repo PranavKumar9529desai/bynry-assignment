@@ -3,15 +3,13 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Profile } from '../types/profile';
-
-// Fix for default marker icons in Leaflet with React
-// This is needed because the default icons use relative paths that don't work in React
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+import type { StaticImageData } from 'next/image';
 
 let DefaultIcon = L.icon({
-  iconUrl: icon,
-  shadowUrl: iconShadow,
+  iconUrl: (icon as StaticImageData).src,
+  shadowUrl: (iconShadow as StaticImageData).src,
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
@@ -88,7 +86,7 @@ const MultiMapView: React.FC<MultiMapViewProps> = ({
         ))}
       </MapContainer>
     </div>
-  );
+  );``
 };
 
 export default MultiMapView;

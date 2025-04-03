@@ -1,8 +1,6 @@
-"use client";
-
-import React from 'react';
-import ProfilePage from '../components/ProfilePage';
-import ErrorBoundary from '../components/ErrorBoundary';
+import React from "react";
+import ProfilePageClient from "../components/ProfilePageClient";
+import ErrorBoundary from "../components/ErrorBoundary";
 
 export default function ProfilesPage() {
   return (
@@ -13,8 +11,8 @@ export default function ProfilesPage() {
         </div>
       </div>
       <ErrorBoundary>
-        <ProfilePage />
+        <ProfilePageClient />
       </ErrorBoundary>
     </div>
   );
-} 
+}

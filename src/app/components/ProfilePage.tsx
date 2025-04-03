@@ -1,4 +1,4 @@
-'use client'; // Needs to be client for state, effects, interactions
+"use client"; // Needs to be client for state, effects, interactions
 
 import React, { useState, useEffect, useTransition, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
@@ -48,13 +48,24 @@ const ProfilePage: React.FC = () => {
   }, [loadInitialData]);
 
   const handleFilterChange = useCallback((filters: ProfileFilterOptions) => {
+    let dbSortBy: any;
+    
+    if (filters.sortBy === 'address') {
+      dbSortBy = 'street';
+    } else if (filters.sortBy === 'name') {
+      dbSortBy = 'fullName';
+    } else {
+      dbSortBy = filters.sortBy;
+    }
+
     const dbFilters: DbProfileFilterOptions = {
         searchTerm: filters.searchTerm,
         location: filters.location,
         interests: filters.interests,
-        sortBy: filters.sortBy,
-        sortOrder: filters.sortOrder
+        sortBy: dbSortBy,
+        sortOrder: filters.sortOrder,
     };
+
     setCurrentFilters(dbFilters);
 
     startFiltering(async () => {

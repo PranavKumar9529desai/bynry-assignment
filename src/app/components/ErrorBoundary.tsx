@@ -1,4 +1,6 @@
+"use client";
 import React, { useState, useEffect } from 'react';
+
 
 interface ErrorBoundaryProps {
   children: React.ReactNode;
