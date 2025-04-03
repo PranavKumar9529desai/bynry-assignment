@@ -1,0 +1,22 @@
+/* Import Leaflet CSS */
+@import 'leaflet/dist/leaflet.css';
+
+/* Add any custom CSS for the map components here */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.map-popup-content h3 {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.map-popup-content p {
+  margin-bottom: 0.25rem;
+}
+
+.map-popup-content button {
+  margin-top: 0.5rem;
+}
