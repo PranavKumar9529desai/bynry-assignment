@@ -244,23 +244,23 @@ export async function deleteProfile(id: string): Promise<{ success: boolean }> {
 export async function getFilterOptions(): Promise<{ locations: string[], interests: string[] }> {
     console.log("Server Action: getFilterOptions called");
     try {
-        // Get distinct non-null locations
-        const distinctLocationsResult = await db.selectDistinct({ location: users.location })
+        // Get distinct non-null cities (assuming 'city' is the desired location filter)
+        const distinctLocationsResult = await db.selectDistinct({ city: users.city }) // Use users.city
                                                 .from(users)
-                                                .where(isNotNull(users.location))
-                                                .orderBy(asc(users.location));
+                                                // Filter out null or empty strings for cities
+                                                .where(and(isNotNull(users.city), sql`${users.city} != ''`))
+                                                .orderBy(asc(users.city));
 
         // Get distinct non-null interests (unnesting the array)
-        // Alias the unnested column as 'interest'
         const distinctInterestsResult = await db.selectDistinct({
             interest: sql<string>`unnest(${users.interests}) AS interest`
         })
         .from(users)
-        .where(sql`${users.interests} IS NOT NULL`) // Keep filtering out users with null interests array
+        .where(sql`${users.interests} IS NOT NULL`) // Filter out users with null interests array
         .orderBy(sql`interest`); // Order by the aliased column
 
-        const locations = distinctLocationsResult.map(row => row.location).filter((loc): loc is string => loc !== null);
-        // Ensure the mapping uses the correct alias 'interest'
+        // Map the results using the correct column name 'city'
+        const locations = distinctLocationsResult.map(row => row.city).filter((city): city is string => city !== null);
         const interests = distinctInterestsResult.map(row => row.interest).filter((interest): interest is string => interest !== null);
 
 
