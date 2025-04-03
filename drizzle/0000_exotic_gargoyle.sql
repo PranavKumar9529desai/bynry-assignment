@@ -1,0 +1,20 @@
+CREATE TABLE "users" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"full_name" text,
+	"photo" text,
+	"description" text,
+	"street" text,
+	"city" text,
+	"state" text,
+	"zip_code" varchar(20),
+	"country" text,
+	"latitude" numeric(10, 7),
+	"longitude" numeric(10, 7),
+	"email" text,
+	"phone" varchar(50),
+	"website" text,
+	"interests" text[],
+	"created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+	"updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+	CONSTRAINT "users_email_unique" UNIQUE("email")
+);
