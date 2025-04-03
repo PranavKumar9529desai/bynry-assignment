@@ -150,15 +150,16 @@ const AdminPanel: React.FC = () => {
         <>
           {isCreatingProfile || editingProfile ? (
             <ProfileForm
-              // Pass the whole profile object or undefined
+              // Pass the object matching ProfileFormData or undefined
               initialData={editingProfile ? {
-                  // Map Profile to ProfileFormData, ensuring optional fields are handled
+                  // This object now correctly matches the expected ProfileFormData type
                   name: editingProfile.name,
-                  photo: editingProfile.photo,
+                  photo: editingProfile.photo ?? '', // Ensure photo is string
                   description: editingProfile.description,
                   address: editingProfile.address,
                   contactInfo: {
                       email: editingProfile.contactInfo?.email ?? '',
+                      // Provide defaults for potentially undefined optional fields
                       phone: editingProfile.contactInfo?.phone ?? '',
                       website: editingProfile.contactInfo?.website ?? '',
                   },

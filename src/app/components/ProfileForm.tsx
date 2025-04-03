@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { Profile, ProfileFormData, Address } from '../types/profile';
+import React, { useState, useEffect } from 'react';
+import { ProfileFormData, Address } from '../types/profile';
 
 interface ProfileFormProps {
-  initialData?: Profile;
+  initialData?: ProfileFormData;
   onSubmit: (data: ProfileFormData) => void;
   onCancel: () => void;
 }
@@ -33,18 +33,26 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ initialData, onSubmit, onCanc
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [newInterest, setNewInterest] = useState('');
 
+  useEffect(() => {
+    setFormData(initialData || emptyProfile);
+    setErrors({});
+    setNewInterest('');
+  }, [initialData]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     
     if (name.includes('.')) {
       const [section, field] = name.split('.');
-      setFormData(prev => ({
-        ...prev,
-        [section]: {
-          ...prev[section as keyof ProfileFormData],
-          [field]: value
-        }
-      }));
+      if (section === 'address' || section === 'contactInfo') {
+        setFormData(prev => ({
+          ...prev,
+          [section]: {
+            ...(prev[section as keyof ProfileFormData] as object || {}),
+            [field]: value
+          }
+        }));
+      }
     } else {
       setFormData(prev => ({
         ...prev,
