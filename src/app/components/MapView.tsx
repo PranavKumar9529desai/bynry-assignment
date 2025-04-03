@@ -11,7 +11,7 @@ import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
 interface MapViewProps {
-  profile: Profile;
+profile: Profile;
   height?: string;
   zoom?: number;
 }

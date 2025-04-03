@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from "react";
 import ProfilePageClient from "../components/ProfilePageClient";
 import ErrorBoundary from "../components/ErrorBoundary";

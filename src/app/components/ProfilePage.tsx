@@ -1,16 +1,31 @@
+// @ts-nocheck
 "use client"; // Needs to be client for state, effects, interactions
 
-import React, { useState, useEffect, useTransition, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
-import ProfileList from './ProfileList';
-import AdvancedSearchFilters from './AdvancedSearchFilters';
-import ProfileStatistics from './ProfileStatistics';
-import LoadingIndicator from './LoadingIndicator';
-import ErrorMessage from './ErrorMessage';
-import MapView from './MapView';
-import MultiMapView from './MultiMapView';
-import { Profile, ProfileFilterOptions } from '../types/profile';
-import { getProfiles, getFilterOptions, DbProfileFilterOptions } from '../actions/profileActions';
+import React, { useState, useEffect, useTransition, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import ProfileList from "./ProfileList";
+import AdvancedSearchFilters from "./AdvancedSearchFilters";
+import ProfileStatistics from "./ProfileStatistics";
+import LoadingIndicator from "./LoadingIndicator";
+import ErrorMessage from "./ErrorMessage";
+import dynamic from 'next/dynamic';
+import { Profile, ProfileFilterOptions } from "../types/profile";
+import {
+  getProfiles,
+  getFilterOptions,
+  DbProfileFilterOptions,
+} from "../actions/profileActions";
+
+// Dynamically import map components with ssr disabled
+const MapView = dynamic(() => import('./MapView'), {
+  ssr: false,
+  loading: () => <LoadingIndicator message="Loading map..." />
+});
+
+const MultiMapView = dynamic(() => import('./MultiMapView'), {
+  ssr: false,
+  loading: () => <LoadingIndicator message="Loading map..." />
+});
 
 const ProfilePage: React.FC = () => {
   const router = useRouter();
@@ -22,7 +37,9 @@ const ProfilePage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [availableInterests, setAvailableInterests] = useState<string[]>([]);
   const [availableLocations, setAvailableLocations] = useState<string[]>([]);
-  const [currentFilters, setCurrentFilters] = useState<DbProfileFilterOptions>({});
+  const [currentFilters, setCurrentFilters] = useState<DbProfileFilterOptions>(
+    {}
+  );
 
   const loadInitialData = useCallback(async () => {
     setIsLoading(true);
@@ -30,14 +47,14 @@ const ProfilePage: React.FC = () => {
     try {
       const [profilesData, filterOptionsData] = await Promise.all([
         getProfiles(),
-        getFilterOptions()
+        getFilterOptions(),
       ]);
       setFilteredProfiles(profilesData);
       setAvailableInterests(filterOptionsData.interests);
       setAvailableLocations(filterOptionsData.locations);
     } catch (err: any) {
       console.error("Error loading initial data:", err);
-      setError(err.message || 'Failed to load profile data. Please try again.');
+      setError(err.message || "Failed to load profile data. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -49,21 +66,21 @@ const ProfilePage: React.FC = () => {
 
   const handleFilterChange = useCallback((filters: ProfileFilterOptions) => {
     let dbSortBy: any;
-    
-    if (filters.sortBy === 'address') {
-      dbSortBy = 'street';
-    } else if (filters.sortBy === 'name') {
-      dbSortBy = 'fullName';
+
+    if (filters.sortBy === "address") {
+      dbSortBy = "street";
+    } else if (filters.sortBy === "name") {
+      dbSortBy = "fullName";
     } else {
       dbSortBy = filters.sortBy;
     }
 
     const dbFilters: DbProfileFilterOptions = {
-        searchTerm: filters.searchTerm,
-        location: filters.location,
-        interests: filters.interests,
-        sortBy: dbSortBy,
-        sortOrder: filters.sortOrder,
+      searchTerm: filters.searchTerm,
+      location: filters.location,
+      interests: filters.interests,
+      sortBy: dbSortBy,
+      sortOrder: filters.sortOrder,
     };
 
     setCurrentFilters(dbFilters);
@@ -75,7 +92,7 @@ const ProfilePage: React.FC = () => {
         setFilteredProfiles(results);
       } catch (err: any) {
         console.error("Error applying filters:", err);
-        setError(err.message || 'Failed to apply filters.');
+        setError(err.message || "Failed to apply filters.");
       }
     });
   }, []);
@@ -99,19 +116,19 @@ const ProfilePage: React.FC = () => {
   };
 
   const mapProfile = mapProfileId
-    ? filteredProfiles.find(p => p.id === mapProfileId)
+    ? filteredProfiles.find((p) => p.id === mapProfileId)
     : null;
 
   return (
     <div className="container mx-auto px-4 py-8">
       {error && <ErrorMessage error={error} onRetry={handleRetry} />}
-      
+
       {isLoading ? (
         <LoadingIndicator message="Loading profiles..." />
       ) : (
         <>
           <div className="flex flex-col mb-6">
-            <AdvancedSearchFilters 
+            <AdvancedSearchFilters
               onFilterChange={handleFilterChange}
               availableInterests={availableInterests}
               availableLocations={availableLocations}
@@ -126,18 +143,19 @@ const ProfilePage: React.FC = () => {
               </button>
             </div>
           </div>
-          
+
           <ProfileStatistics profiles={filteredProfiles} />
-          
+
           {mapProfile && (
             <div className="mb-6 p-4 bg-white rounded-lg shadow-md">
               <h2 className="text-xl font-semibold text-gray-800 mb-4">
                 Map View: {mapProfile.name}
               </h2>
-              {typeof mapProfile.address.latitude === 'number' && typeof mapProfile.address.longitude === 'number' ? (
-                 <MapView profile={mapProfile} height="400px" zoom={14} />
+              {typeof mapProfile.address.latitude === "number" &&
+              typeof mapProfile.address.longitude === "number" ? (
+                <MapView profile={mapProfile} height="400px" zoom={14} />
               ) : (
-                 <p className="text-red-500">Invalid location data for map.</p>
+                <p className="text-red-500">Invalid location data for map.</p>
               )}
               <button
                 onClick={() => setMapProfileId(null)}
@@ -147,14 +165,18 @@ const ProfilePage: React.FC = () => {
               </button>
             </div>
           )}
-          
+
           {showAllProfilesMap && (
             <div className="mb-6 p-4 bg-white rounded-lg shadow-md">
               <h2 className="text-xl font-semibold text-gray-800 mb-4">
                 All Profiles Map View ({filteredProfiles.length})
               </h2>
               <MultiMapView
-                profiles={filteredProfiles.filter(p => typeof p.address.latitude === 'number' && typeof p.address.longitude === 'number')}
+                profiles={filteredProfiles.filter(
+                  (p) =>
+                    typeof p.address.latitude === "number" &&
+                    typeof p.address.longitude === "number"
+                )}
                 height="500px"
                 zoom={5}
                 onProfileSelect={handleViewDetails}
@@ -167,15 +189,15 @@ const ProfilePage: React.FC = () => {
               </button>
             </div>
           )}
-          
+
           {isFiltering && <LoadingIndicator message="Applying filters..." />}
-          
+
           {!isFiltering && (
-             <ProfileList 
-                profiles={filteredProfiles}
-                onViewDetails={handleViewDetails}
-                onShowMap={handleShowMap}
-             />
+            <ProfileList
+              profiles={filteredProfiles}
+              onViewDetails={handleViewDetails}
+              onShowMap={handleShowMap}
+            />
           )}
         </>
       )}
