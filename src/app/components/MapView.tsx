@@ -10,17 +10,6 @@ import { StaticImageData } from 'next/image';
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
-let DefaultIcon = L.icon({
-  iconUrl: (icon as StaticImageData).src,
-  shadowUrl: (iconShadow as StaticImageData).src,
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-});
-
-L.Marker.prototype.options.icon = DefaultIcon;
-
 interface MapViewProps {
   profile: Profile;
   height?: string;
@@ -29,6 +18,20 @@ interface MapViewProps {
 
 const MapView: React.FC<MapViewProps> = ({ profile, height = '400px', zoom = 13 }) => {
   const mapRef = useRef<L.Map | null>(null);
+
+  useEffect(() => {
+    // Initialize the default icon
+    const DefaultIcon = L.icon({
+      iconUrl: icon.src,
+      shadowUrl: iconShadow.src,
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    });
+    
+    L.Marker.prototype.options.icon = DefaultIcon;
+  }, []);
 
   useEffect(() => {
     // Center map on profile location when profile changes

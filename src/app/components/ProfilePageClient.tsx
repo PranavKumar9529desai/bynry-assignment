@@ -1,12 +1,12 @@
 "use client";
 
-import React, { Suspense } from 'react';
-import ProfilePage from './ProfilePage';
-import LoadingIndicator from './LoadingIndicator';
+import React, { Suspense } from "react";
+import ProfilePage from "./ProfilePage";
+import LoadingIndicator from "./LoadingIndicator";
 
 export default function ProfilePageClient() {
   // Add check for browser environment
-  const isBrowser = typeof window !== 'undefined';
+  const isBrowser = typeof window !== "undefined";
 
   if (!isBrowser) {
     return <LoadingIndicator message="Loading..." />;
@@ -17,4 +17,4 @@ export default function ProfilePageClient() {
       <ProfilePage />
     </Suspense>
   );
-} 
+}

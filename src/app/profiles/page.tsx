@@ -1,6 +1,7 @@
 import React from "react";
 import ProfilePageClient from "../components/ProfilePageClient";
 import ErrorBoundary from "../components/ErrorBoundary";
+import ProfilePage from "../components/ProfilePage";
 
 export default function ProfilesPage() {
   return (
@@ -10,9 +11,8 @@ export default function ProfilesPage() {
           <h1 className="text-2xl font-bold">Profile Management System</h1>
         </div>
       </div>
-      <ErrorBoundary>
-        <ProfilePageClient />
-      </ErrorBoundary>
+      {/* ProfilePage */}
+      <ProfilePage />
     </div>
   );
 }
